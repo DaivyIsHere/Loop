@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4346a1fdf5dd4534c94d690bd7f95018, type: 3}
+  m_Name: Phantom Tangler
+  m_EditorClassIdentifier: 
+  maxStack: 1
+  tradable: 1
+  destroyable: 1
+  droppable: 1
+  toolTip: '<b>{NAME}</b>
+
+    A nice-looking stick.
+
+
+    {DAMAGEBONUS} Damage'
+  image: {fileID: -5810327747478374648, guid: 09af3ec9154075842966fbcc99fea8c4, type: 3}
+  minLevel: 0
+  cooldown: 0
+  _cooldownCategory: 
+  category: WeaponWand
+  healthBonus: 0
+  damageBonus: 0
+  defenseBonus: 0
+  shootPattern:
+    shootMainAngle: 0
+    shootSpreadAngle: 0
+    shootAmount: 1
+    angleDeviation: 5
+    shootBonusRate: 5
+  projectileAttribute:
+    movePattern: 0
+    maxDamage: 1
+    minDamage: 5
+    moveRange: 5
+    moveSpeed: 7
+    radius: 0.25
+    sprite: {fileID: 21300000, guid: bb8d4ab4f71cd9947bea200ea0f9f9a0, type: 3}
+    piercingEnemy: 0
+    piercingObject: 0
+    ignoreDefence: 0

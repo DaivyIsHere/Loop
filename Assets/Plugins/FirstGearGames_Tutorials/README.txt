@@ -1,0 +1,1 @@
+Some scenes may rely upon TextMeshPro being imported.
