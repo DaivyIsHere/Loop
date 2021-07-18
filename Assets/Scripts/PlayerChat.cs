@@ -171,6 +171,7 @@ public partial class PlayerChat : NetworkBehaviour
                         break;
                     case "!save":
                         player.CmdTestSavePlayer();
+                        player.CmdTestSaveEnvir();
                         break;
                     case "!night":
                         player.CmdTestNight();
@@ -180,6 +181,9 @@ public partial class PlayerChat : NetworkBehaviour
                         break;
                     case "!f":
                         player.CmdTestFirework();
+                        break;
+                    case "!bush":
+                        player.CmdTestBush();
                         break;
 
                     default:

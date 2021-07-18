@@ -20,6 +20,7 @@ public class Player : Entity
     public PlayerInventory inventory;
     public PlayerEquipment equipment;
     public PlayerLooting playerLooting;
+    public PlayerGathering playerGathering;
     public PlayerShoot playerShoot;
     public PlayerWater playerWater;
     public NetworkNavMeshAgentRubberbanding2D rubberbanding;
@@ -326,6 +327,17 @@ public class Player : Entity
     }
 
     [Command]
+    public void CmdTestBush()
+    {
+        var bush = Instantiate(EnvironmentManager.singleton.bushPref);
+        bush.transform.position = transform.position;
+        bush.GetComponent<Bush>().id = EnvironmentManager.singleton.bushList.Count + 1;
+
+        EnvironmentManager.singleton.SpawnBush(bush);
+        Database.singleton.SaveBush();
+    }
+
+    [Command]
     public void CmdTestSpawnEnemy()
     {
         Spawner.singleton.SpawnEnemy(transform.position);
@@ -337,6 +349,13 @@ public class Player : Entity
         Database.singleton.CharacterSaveMany(Player.onlinePlayers.Values);
         if (Player.onlinePlayers.Count > 0)
             Debug.Log("saved " + Player.onlinePlayers.Count + " player(s)");
+    }
+
+    [Command]
+    public void CmdTestSaveEnvir()
+    {
+        Database.singleton.SaveEnvironmentData();
+        Debug.Log("EnvironmentData Saved");
     }
 
     [Command]
