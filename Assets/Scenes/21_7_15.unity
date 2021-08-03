@@ -13267,6 +13267,7 @@ MonoBehaviour:
   - {fileID: 8776916791616831180, guid: 28e19fc735b6d124ca05927d37363dfd, type: 3}
   - {fileID: 6967578443327973310, guid: 5a4e3c01f338d5f4f9c18484eceb4af9, type: 3}
   - {fileID: 8013840085422175555, guid: 273a55b4469f3044392f39dcf9869acd, type: 3}
+  - {fileID: 2461371686263610568, guid: 0aec1c7f4661ca44883f6fc87cb47ae8, type: 3}
   state: 0
   uiPopup: {fileID: 1690146939}
   uiLogin: {fileID: 1545408978}

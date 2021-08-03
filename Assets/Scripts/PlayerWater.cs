@@ -39,6 +39,13 @@ public class PlayerWater : NetworkBehaviour
             ConsumeWater(amount, fountainID);
     }
 
+    public void DrinkWater(int fountainID)
+    {
+        int amount = MaxWaterAmount - waterAmount;
+        if (amount > 0)
+            ConsumeWater(amount, fountainID);
+    }
+
     [Server]//call Database to save water changes
     public void ConsumeWater(int amount, int fountainID)
     {

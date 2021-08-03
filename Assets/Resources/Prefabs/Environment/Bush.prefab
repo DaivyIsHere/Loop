@@ -426,6 +426,7 @@ MonoBehaviour:
   IsShowing: 0
   _leaf: {fileID: 11400000, guid: a85b0e95580a7bd4ead23d0240d10a8b, type: 2}
   _refreshInterval: 300
+  _checkInterval: 30
   id: 0
   RemaingingAmount: 0
   RefreshEnd: 0

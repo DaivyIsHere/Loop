@@ -13,21 +13,14 @@ public class Fountain : InteractableArea
     public int totalusedTimes = 0;
     public int totalDrankAmount = 0;
 
-    protected override void Update()
-    {
-        if(isClient && base.InRange && (Input.GetKeyDown(KeyCode.E)))
-            DoAction();
-        base.Update();
-    }
-
     protected override bool CanInteract()
     {
-        if(Player.localPlayer == null)
+        if (Player.localPlayer == null)
             return false;
-        
+
         Player player = Player.localPlayer;
 
-        if(player.playerWater.waterAmount >= player.playerWater.MaxWaterAmount)
+        if (player.playerWater.waterAmount >= player.playerWater.MaxWaterAmount)
             return false;
         else
             return true;
@@ -38,5 +31,23 @@ public class Fountain : InteractableArea
     {
         //print("do action");
         Player.localPlayer.playerWater.CmdDrinkWater(id);
+    }
+
+    [Server]
+    protected override bool CanInteract(NetworkIdentity netIdentity)
+    {
+        if (netIdentity == null)
+            return false;
+
+        if (netIdentity.GetComponent<PlayerWater>().waterAmount >= netIdentity.GetComponent<PlayerWater>().MaxWaterAmount)
+            return false;
+
+        return true;
+    }
+
+    [Server]
+    protected override void DoAction(NetworkIdentity netIdentity)
+    {
+        netIdentity.GetComponent<PlayerWater>().DrinkWater(id);
     }
 }
