@@ -882,7 +882,7 @@ public partial class Database : MonoBehaviour
             var bush = bushGO.GetComponent<Bush>();
             bush.id = row.id;
             bush.transform.position = new Vector2(row.positionX, row.positionY);
-            bush.RemaingingAmount = row.remaningAmount;
+            bush.RemainingAmount = row.remaningAmount;
             bush.RefreshEnd = NetworkTime.time + row.refreshTime;
             EnvironmentManager.singleton.SpawnBush(bushGO);
         }
@@ -899,7 +899,7 @@ public partial class Database : MonoBehaviour
                 id = bush.id,
                 positionX = bush.transform.position.x,
                 positionY = bush.transform.position.y,
-                remaningAmount = bush.RemaingingAmount,
+                remaningAmount = bush.RemainingAmount,
                 refreshTime = NetworkTime.time >= bush.RefreshEnd ? 0 : (float)(bush.RefreshEnd - NetworkTime.time)
             });
         }

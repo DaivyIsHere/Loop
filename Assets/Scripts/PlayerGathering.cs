@@ -16,10 +16,8 @@ public class PlayerGathering : NetworkBehaviour
         return _player.inventory.CanAdd(item, amount);
     }
 
-    //[Command]
     public void Gather(Item item, int amount)
     {
-        _cooldownEnd = NetworkTime.time + _cooldownTime;
         _player.inventory.Add(item, amount);
     }
 }

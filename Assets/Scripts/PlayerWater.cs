@@ -31,13 +31,13 @@ public class PlayerWater : NetworkBehaviour
         return (waterAmount != 0 && MaxWaterAmount != 0) ? (float)waterAmount / (float)MaxWaterAmount : 0;
     }
 
-    [Command]
-    public void CmdDrinkWater(int fountainID)
-    {
-        int amount = MaxWaterAmount - waterAmount;
-        if (amount > 0)
-            ConsumeWater(amount, fountainID);
-    }
+    //[Command]
+    //public void CmdDrinkWater(int fountainID)
+    //{
+    //    int amount = MaxWaterAmount - waterAmount;
+    //    if (amount > 0)
+    //        ConsumeWater(amount, fountainID);
+    //}
 
     public void DrinkWater(int fountainID)
     {

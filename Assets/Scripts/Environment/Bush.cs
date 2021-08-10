@@ -3,51 +3,47 @@ using UnityEngine;
 
 public class Bush : InteractableArea
 {
-    [SerializeField] private ScriptableItem _leaf;
+    [SerializeField] private SpriteRenderer _renderer;
+    [SerializeField] private Sprite _withFruit;
+    [SerializeField] private Sprite _withoutFruit;
+
+    [SerializeField] private ScriptableItem _fruit;
     [SerializeField] private double _refreshInterval = 300;
     [SerializeField] private float _checkInterval = 30;
 
     public int id;
-    //[SyncVar]
-    public int RemaingingAmount;
-    //[SyncVar]
+    [SyncVar(hook = nameof(UpdateSprite))]
+    public int RemainingAmount;
+    [SyncVar]
     public double RefreshEnd;
 
     public override void OnStartServer() => InvokeRepeating(nameof(CheckRefresh), 0, _checkInterval);
 
-    [Server]
-    protected override bool CanInteract(NetworkIdentity netIdentity)
+    public override void OnStartClient() => _renderer.sprite = RemainingAmount > 0 ? _withFruit : _withoutFruit;
+
+    protected override bool CanInteract(Player player)
     {
-        //if (Player.localPlayer == null || !Player.localPlayer.playerGathering.CanGather || RemaingingAmount <= 0)
-        //    return false;
-
-        if (netIdentity == null)
+        if (player == null)
             return false;
 
-        if (!netIdentity.GetComponent<PlayerGathering>().CanGather)
+        if (!player.playerGathering.CanGather)
             return false;
 
-        if (RemaingingAmount <= 0)
+        if (RemainingAmount <= 0)
             return false;
 
         return true;
     }
 
     [Server]
-    protected override void DoAction(NetworkIdentity netIdentity)
+    protected override void DoAction(Player player)
     {
-        var leaf = new Item(_leaf);
+        var fruit = new Item(_fruit);
 
-        //if (Player.localPlayer.playerGathering.TryGather(leaf, 1))
-        //{
-        //    Player.localPlayer.playerGathering.CmdGather(leaf, 1);
-        //    CmdUpdateBush();
-        //}
-
-        if (netIdentity.GetComponent<PlayerGathering>().TryGather(leaf, 1))
+        if (player.playerGathering.TryGather(fruit, 1))
         {
-            netIdentity.GetComponent<PlayerGathering>().Gather(leaf, 1);
-            RemaingingAmount--;
+            player.playerGathering.Gather(fruit, 1);
+            RemainingAmount--;
             RefreshEnd = NetworkTime.time + _refreshInterval;
         }
     }
@@ -56,13 +52,8 @@ public class Bush : InteractableArea
     private void CheckRefresh()
     {
         if (NetworkTime.time >= RefreshEnd)
-            RemaingingAmount = 10;
+            RemainingAmount = 10;
     }
 
-    //[Command(ignoreAuthority = true)]
-    //private void CmdUpdateBush()
-    //{
-    //    RemaingingAmount--;
-    //    RefreshEnd = NetworkTime.time + _refreshInterval;
-    //}
+    private void UpdateSprite(int oldAmount, int newAmount) => _renderer.sprite = newAmount > 0 ? _withFruit : _withoutFruit;
 }
