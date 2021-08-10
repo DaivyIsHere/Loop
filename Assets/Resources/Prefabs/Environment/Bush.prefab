@@ -287,8 +287,7 @@ SpriteRenderer:
   m_SortingLayerID: 2136243641
   m_SortingLayer: 4
   m_SortingOrder: 0
-  m_Sprite: {fileID: -8012973358287068453, guid: 09af3ec9154075842966fbcc99fea8c4,
-    type: 3}
+  m_Sprite: {fileID: 21300000, guid: d099283e9da19c348a225cbf8eb3811f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -316,7 +315,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 2.97, y: 2.56}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -424,9 +423,12 @@ MonoBehaviour:
   toolTipAnimation: {fileID: 2461371684596071835}
   InRange: 0
   IsShowing: 0
-  _leaf: {fileID: 11400000, guid: a85b0e95580a7bd4ead23d0240d10a8b, type: 2}
+  _renderer: {fileID: 4839478989338671997}
+  _withFruit: {fileID: 21300000, guid: d099283e9da19c348a225cbf8eb3811f, type: 3}
+  _withoutFruit: {fileID: 21300000, guid: 1db326f6860f8784fabf80f34f5b038f, type: 3}
+  _fruit: {fileID: 11400000, guid: a85b0e95580a7bd4ead23d0240d10a8b, type: 2}
   _refreshInterval: 300
   _checkInterval: 30
   id: 0
-  RemaingingAmount: 0
+  RemainingAmount: 0
   RefreshEnd: 0
