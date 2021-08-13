@@ -355,6 +355,7 @@ GameObject:
   - component: {fileID: 8792162248988148683}
   - component: {fileID: 6978427957922989374}
   - component: {fileID: 6551479515701544517}
+  - component: {fileID: 7869283654534657763}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -463,6 +464,7 @@ MonoBehaviour:
   inventory: {fileID: 6807836056681096632}
   equipment: {fileID: 1625002544732326859}
   playerLooting: {fileID: 7078579241674677145}
+  playerGathering: {fileID: 7869283654534657763}
   playerShoot: {fileID: 1195897054913886490}
   playerWater: {fileID: 6589932715873461236}
   rubberbanding: {fileID: 9053603262052212175}
@@ -900,6 +902,21 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &7869283654534657763
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8650008945050611061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc6cf9ffd6888d14c820d593b910608d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  _player: {fileID: 2200859595220107416}
 --- !u!1 &9143050641064400739
 GameObject:
   m_ObjectHideFlags: 0

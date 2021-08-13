@@ -15,8 +15,10 @@ public class EnvironmentManager : NetworkBehaviour
 
     public GameObject fountainPref;
     public GameObject RainAreaPref;
+    public GameObject bushPref;
     public List<Fountain> fountainList;
     public List<RainArea> RainAreaList;
+    public List<Bush> bushList;
 
     [Header("Database")]
     public float saveInterval = 60f; // in seconds
@@ -34,6 +36,12 @@ public class EnvironmentManager : NetworkBehaviour
         NetworkServer.Spawn(RainArea);
         RainAreaList.Add(RainArea.GetComponent<RainArea>());
         checkRainFinishTime();
+    }
+
+    public void SpawnBush(GameObject bush)
+    {
+        NetworkServer.Spawn(bush);
+        bushList.Add(bush.GetComponent<Bush>());
     }
 
     public override void OnStartServer()

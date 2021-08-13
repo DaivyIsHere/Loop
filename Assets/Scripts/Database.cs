@@ -175,6 +175,16 @@ public partial class Database : MonoBehaviour
         public DateTime lastsaved { get; set; }
     }
 
+    class Envir_Bush
+    {
+        [PrimaryKey]
+        public int id { get; set; }
+        public float positionX { get; set; }
+        public float positionY { get; set; }
+        public int remaningAmount { get; set; }
+        public float refreshTime { get; set; }
+    }
+
     void Awake()
     {
         // initialize singleton
@@ -218,6 +228,7 @@ public partial class Database : MonoBehaviour
         connection.CreateTable<Envir_WaterData>();
         connection.CreateTable<Envir_Fountain>();
         connection.CreateTable<Envir_RainArea>();
+        connection.CreateTable<Envir_Bush>();
 
         AddTestAccount();
 
@@ -737,6 +748,7 @@ public partial class Database : MonoBehaviour
         LoadWaterData();
         LoadFountain();
         LoadRainArea();
+        LoadBush();
     }
 
     public void SaveEnvironmentData()//call by NetworkManager when serverStarted
@@ -744,6 +756,7 @@ public partial class Database : MonoBehaviour
         SaveWaterData();
         SaveFountain();
         SaveRainArea();
+        SaveBush();
     }
 
     public void LoadWaterData()
@@ -857,6 +870,37 @@ public partial class Database : MonoBehaviour
                 position_Y = row.transform.position.y,
                 RainFinishedTime = row.RainFinishedTime,
                 lastsaved = DateTime.UtcNow
+            });
+        }
+    }
+
+    public void LoadBush()
+    {
+        foreach (var row in connection.Query<Envir_Bush>("SELECT * FROM Envir_Bush"))
+        {
+            var bushGO = Instantiate(EnvironmentManager.singleton.bushPref);
+            var bush = bushGO.GetComponent<Bush>();
+            bush.id = row.id;
+            bush.transform.position = new Vector2(row.positionX, row.positionY);
+            bush.RemainingAmount = row.remaningAmount;
+            bush.RefreshEnd = NetworkTime.time + row.refreshTime;
+            EnvironmentManager.singleton.SpawnBush(bushGO);
+        }
+    }
+
+    public void SaveBush()
+    {
+        connection.Execute("DELETE FROM Envir_Bush");
+
+        foreach (var bush in EnvironmentManager.singleton.bushList)
+        {
+            connection.InsertOrReplace(new Envir_Bush
+            {
+                id = bush.id,
+                positionX = bush.transform.position.x,
+                positionY = bush.transform.position.y,
+                remaningAmount = bush.RemainingAmount,
+                refreshTime = NetworkTime.time >= bush.RefreshEnd ? 0 : (float)(bush.RefreshEnd - NetworkTime.time)
             });
         }
     }
