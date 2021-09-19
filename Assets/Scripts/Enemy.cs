@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using System;
 
 [RequireComponent(typeof(EnemyItemDrop))]
 public class Enemy : Entity
@@ -47,12 +48,60 @@ public class Enemy : Entity
     // save the start position for random movement distance and respawning
     Vector2 startPosition;
 
+    //Maybe not extract out cause we need to pass some argument.
+    #region EnemyAI
+    private StateMachine _stateMachine;
+
+    protected override void Awake()
+    {
+        _stateMachine = new StateMachine();
+
+        var enemyIdle = new EnemyIdle(this);
+        var enemyWandering = new EnemyWandering(this, moveProbability, roamDistance, startPosition);
+        var enemyChasing = new EnemyChasing(this);
+        var enemyAttacking = new EnemyAttacking(this);
+        var enemyFleeing = new EnemyFleeing(this);
+        var enemyDead = new EnemyDead(this, OnDeath);
+
+        Func<bool> aggro = () => target != null && target.health.current > 0;
+        Func<bool> aggroChase = () => target != null && target.health.current > 0 && Vector2.Distance(transform.position, target.collider.ClosestPointOnBounds(transform.position)) > enemyShoot.projectileAttribute.moveRange * 0.8f;
+        Func<bool> targetTooFarToAttack = () => target != null && Vector2.Distance(transform.position, target.collider.ClosestPointOnBounds(transform.position)) > enemyShoot.projectileAttribute.moveRange * 0.8f;
+        Func<bool> targetTooFarToFollow = () => target != null && Vector2.Distance(transform.position, target.collider.ClosestPointOnBounds(transform.position)) > followDistance;
+        Func<bool> targetTooClose = () => target != null && Vector2.Distance(transform.position, target.collider.ClosestPointOnBounds(transform.position)) < enemyShoot.projectileAttribute.moveRange * 0.2f; ;
+        Func<bool> targetDisappeared = () => target == null;
+        Func<bool> targetDied = () => target != null && target.health.current <= 0;
+        Func<bool> lowHealth = () => health.current < health.max * 0.2f; //make a field for percentage
+        Func<bool> died = () => health.current <= 0;
+        
+        _stateMachine.AddTransition(enemyWandering, enemyChasing, targetTooFarToAttack);
+        _stateMachine.AddTransition(enemyWandering, enemyAttacking, aggro);
+
+        _stateMachine.AddTransition(enemyChasing, enemyWandering, targetDied);
+        _stateMachine.AddTransition(enemyChasing, enemyWandering, targetDisappeared);
+        _stateMachine.AddTransition(enemyChasing, enemyWandering, targetTooFarToFollow);
+        _stateMachine.AddTransition(enemyChasing, enemyChasing, targetTooFarToAttack);
+        _stateMachine.AddTransition(enemyChasing, enemyAttacking, aggro);
+
+        _stateMachine.AddTransition(enemyAttacking, enemyWandering, targetDied);
+        _stateMachine.AddTransition(enemyAttacking, enemyWandering, targetDisappeared);
+        _stateMachine.AddTransition(enemyAttacking, enemyWandering, targetTooFarToFollow);
+        _stateMachine.AddTransition(enemyAttacking, enemyChasing, targetTooFarToAttack);
+
+        _stateMachine.AddAnyTransition(enemyDead, died);
+        _stateMachine.AddAnyTransition(enemyFleeing, lowHealth);
+    }
+    #endregion
+
     protected override void Start()
     {
         base.Start();
         // remember start position in case we need to respawn later
         startPosition = transform.position;
         destination = RandomRoamPosition();
+
+        //Set the initial state at Start to prevent any execution order conflict
+        //(e.g. accessing NavMeshAgent before it's set)
+        _stateMachine.SetState(new EnemyWandering(this, moveProbability, roamDistance, startPosition));
     }
 
     protected override void UpdateOverlays()
@@ -126,7 +175,7 @@ public class Enemy : Entity
 
     Vector2 RandomRoamPosition()
     {
-        Vector2 circle2D = Random.insideUnitCircle * roamDistance;
+        Vector2 circle2D = UnityEngine.Random.insideUnitCircle * roamDistance;
         return (Vector2)transform.position + circle2D;
     }
 
@@ -178,7 +227,7 @@ public class Enemy : Entity
 
     bool EventMoveRandomly()
     {
-        return Random.value <= moveProbability * Time.deltaTime;
+        return UnityEngine.Random.value <= moveProbability * Time.deltaTime;
     }
 
     bool EventStunned()
@@ -225,7 +274,7 @@ public class Enemy : Entity
         {
             // walk to a random position in movement radius (from 'start')
             // note: circle y is 0 because we add it to start.y
-            Vector2 circle2D = Random.insideUnitCircle * roamDistance;
+            Vector2 circle2D = UnityEngine.Random.insideUnitCircle * roamDistance;
             movement.Navigate(startPosition + circle2D, 0);
             return "MOVING";
         }
@@ -334,12 +383,15 @@ public class Enemy : Entity
     [Server]
     protected override string UpdateServer()
     {
-        if (state == "IDLE") return UpdateServer_IDLE();
-        if (state == "MOVING") return UpdateServer_MOVING();
-        if (state == "DEAD") return UpdateServer_DEAD();
-        if (state == "ATTACK") return UpdateServer_ATTACK();
-        Debug.LogError("invalid state:" + state);
-        return "IDLE";
+        //if (state == "IDLE") return UpdateServer_IDLE();
+        //if (state == "MOVING") return UpdateServer_MOVING();
+        //if (state == "DEAD") return UpdateServer_DEAD();
+        //if (state == "ATTACK") return UpdateServer_ATTACK();
+        //Debug.LogError("invalid state:" + state);
+        //return "IDLE";
+
+        _stateMachine.Tick();
+        return _stateMachine.CurrentState.Name;
     }
 
     // finite state machine - client ///////////////////////////////////////////
