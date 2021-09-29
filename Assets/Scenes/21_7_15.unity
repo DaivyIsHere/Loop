@@ -13181,7 +13181,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b0fecffa3f624585964b0d0eb21b18e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Port: 1121
+  Port: 7777
   NoDelay: 1
   Interval: 10
   FastResend: 0
@@ -13273,7 +13273,7 @@ MonoBehaviour:
   uiLogin: {fileID: 1545408978}
   serverList:
   - name: Online
-    ip: 123.195.84.187
+    ip: 35.201.235.6
   - name: Local
     ip: localhost
   combatLogoutDelay: 5
