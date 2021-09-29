@@ -2,12 +2,12 @@
 
 public class EnemyWandering : IState
 {
+    public string Name => "WANDERING";
+
     private readonly Enemy _enemy;
     private readonly float _moveProbability;
     private readonly float _roamDistance;
     private readonly Vector2 _startPosition;
-
-    public string Name => "WANDERING";
 
     public EnemyWandering(Enemy enemy, float moveProbability, float roamDistance, Vector2 startPosition)
     {

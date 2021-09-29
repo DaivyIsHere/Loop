@@ -2,10 +2,10 @@
 
 public class EnemyDead : IState
 {
+    public string Name => "DEAD";
+
     private readonly Enemy _enemy;
     private readonly Action _onDeath;
-
-    public string Name => "DEAD";
 
     public EnemyDead(Enemy enemy, Action onDeath)
     {

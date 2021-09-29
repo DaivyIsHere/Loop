@@ -1,8 +1,8 @@
 ﻿public class EnemyIdle : IState
 {
-    private readonly Enemy _enemy;
-
     public string Name => "IDLE";
+
+    private readonly Enemy _enemy;
 
     public EnemyIdle(Enemy enemy)
     {

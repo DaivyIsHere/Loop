@@ -63,16 +63,16 @@ public class Enemy : Entity
         var enemyFleeing = new EnemyFleeing(this);
         var enemyDead = new EnemyDead(this, OnDeath);
 
-        Func<bool> aggro = () => target != null && target.health.current > 0;
-        Func<bool> aggroChase = () => target != null && target.health.current > 0 && Vector2.Distance(transform.position, target.collider.ClosestPointOnBounds(transform.position)) > enemyShoot.projectileAttribute.moveRange * 0.8f;
-        Func<bool> targetTooFarToAttack = () => target != null && Vector2.Distance(transform.position, target.collider.ClosestPointOnBounds(transform.position)) > enemyShoot.projectileAttribute.moveRange * 0.8f;
-        Func<bool> targetTooFarToFollow = () => target != null && Vector2.Distance(transform.position, target.collider.ClosestPointOnBounds(transform.position)) > followDistance;
-        Func<bool> targetTooClose = () => target != null && Vector2.Distance(transform.position, target.collider.ClosestPointOnBounds(transform.position)) < enemyShoot.projectileAttribute.moveRange * 0.2f; ;
-        Func<bool> targetDisappeared = () => target == null;
-        Func<bool> targetDied = () => target != null && target.health.current <= 0;
-        Func<bool> lowHealth = () => health.current < health.max * 0.2f; //make a field for percentage
-        Func<bool> died = () => health.current <= 0;
-        
+        bool aggro() => target != null && target.health.current > 0;
+        //bool aggroChase() => target != null && target.health.current > 0 && Vector2.Distance(transform.position, target.collider.ClosestPointOnBounds(transform.position)) > enemyShoot.projectileAttribute.moveRange * 0.8f;
+        bool targetTooFarToAttack() => target != null && Vector2.Distance(transform.position, target.collider.ClosestPointOnBounds(transform.position)) > enemyShoot.projectileAttribute.moveRange * 0.8f;
+        bool targetTooFarToFollow() => target != null && Vector2.Distance(transform.position, target.collider.ClosestPointOnBounds(transform.position)) > followDistance;
+        //bool targetTooClose() => target != null && Vector2.Distance(transform.position, target.collider.ClosestPointOnBounds(transform.position)) < enemyShoot.projectileAttribute.moveRange * 0.2f;
+        bool targetDisappeared() => target == null;
+        bool targetDied() => target != null && target.health.current <= 0;
+        bool lowHealth() => health.current < health.max * 0.2f; //make a field for percentage
+        bool died() => health.current <= 0;
+
         _stateMachine.AddTransition(enemyWandering, enemyChasing, targetTooFarToAttack);
         _stateMachine.AddTransition(enemyWandering, enemyAttacking, aggro);
 
