@@ -333,6 +333,7 @@ GameObject:
   - component: {fileID: 7666351809181650942}
   - component: {fileID: -1227733775416238736}
   - component: {fileID: -7603987632772127378}
+  - component: {fileID: 4329561303087398262}
   m_Layer: 11
   m_Name: Enemy
   m_TagString: Untagged
@@ -671,14 +672,18 @@ MonoBehaviour:
   lookDirection: {x: 0, y: -1}
   enemyItemDrop: {fileID: -1227733775416238736}
   enemyShoot: {fileID: -7603987632772127378}
+  enemyAI: {fileID: 4329561303087398262}
   movementVector: {x: 0, y: 0, z: 0}
   moveProbability: 0.1
+  roamDistance: 2
+  followDistance: 6.5
   attackToMoveRangeRatio: 0.8
   overlayPosition: {fileID: 4683756764880232163}
   overlayOffset: {x: 0, y: 1, z: 0}
   amountOverlay: {fileID: 179150431952405648, guid: 46257aa9192416a4888283198cfc8bac,
     type: 3}
   damageTextColor: {r: 0.8039216, g: 0.23529412, b: 0.20784314, a: 1}
+  startPosition: {x: 0, y: 0}
 --- !u!114 &-6219534011776651018
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -813,3 +818,16 @@ MonoBehaviour:
     piercingEnemy: 0
     piercingObject: 0
     ignoreDefence: 0
+--- !u!114 &4329561303087398262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8983927025017957660}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a14ddf9a61f09b442914ca7cf1bdc9e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _enemy: {fileID: -3057511570411962}

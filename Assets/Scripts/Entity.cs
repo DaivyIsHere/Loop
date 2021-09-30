@@ -300,7 +300,7 @@ public abstract partial class Entity : NetworkBehaviour
     // universal OnDeath function that takes care of all the Entity stuff.
     // should be called by inheriting classes' finite state machine on death.
     [Server]
-    protected virtual void OnDeath()
+    public virtual void OnDeath()
     {
         // clear target
         target = null;

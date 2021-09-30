@@ -10,13 +10,14 @@ public class Enemy : Entity
     [Header("Components")]
     public EnemyItemDrop enemyItemDrop;
     public EnemyShoot enemyShoot;
+    public EnemyAI enemyAI;
 
     [Header("Movement")]
     public Vector3 movementVector = Vector3.zero;
     [Range(0, 1)] public float moveProbability = 0.1f; // chance per second
     private Vector2 destination;
-    private float roamDistance = 2f;
-    private float followDistance = 6.5f;
+    public float roamDistance = 2f; //public for EnemyAI
+    public float followDistance = 6.5f; //public for EnemyAI
     //public float turnSpd = 10f;//轉向速度
 
     //public Vector3 destination = Vector3.zero;
@@ -46,51 +47,7 @@ public class Enemy : Entity
     //double respawnTimeEnd; // double for long term precision
 
     // save the start position for random movement distance and respawning
-    Vector2 startPosition;
-
-    //Maybe not extract out cause we need to pass some argument.
-    #region EnemyAI
-    private StateMachine _stateMachine;
-
-    protected override void Awake()
-    {
-        _stateMachine = new StateMachine();
-
-        var enemyIdle = new EnemyIdle(this);
-        var enemyWandering = new EnemyWandering(this, moveProbability, roamDistance, startPosition);
-        var enemyChasing = new EnemyChasing(this);
-        var enemyAttacking = new EnemyAttacking(this);
-        var enemyFleeing = new EnemyFleeing(this);
-        var enemyDead = new EnemyDead(this, OnDeath);
-
-        bool aggro() => target != null && target.health.current > 0;
-        //bool aggroChase() => target != null && target.health.current > 0 && Vector2.Distance(transform.position, target.collider.ClosestPointOnBounds(transform.position)) > enemyShoot.projectileAttribute.moveRange * 0.8f;
-        bool targetTooFarToAttack() => target != null && Vector2.Distance(transform.position, target.collider.ClosestPointOnBounds(transform.position)) > enemyShoot.projectileAttribute.moveRange * 0.8f;
-        bool targetTooFarToFollow() => target != null && Vector2.Distance(transform.position, target.collider.ClosestPointOnBounds(transform.position)) > followDistance;
-        //bool targetTooClose() => target != null && Vector2.Distance(transform.position, target.collider.ClosestPointOnBounds(transform.position)) < enemyShoot.projectileAttribute.moveRange * 0.2f;
-        bool targetDisappeared() => target == null;
-        bool targetDied() => target != null && target.health.current <= 0;
-        bool lowHealth() => health.current < health.max * 0.2f; //make a field for percentage
-        bool died() => health.current <= 0;
-
-        _stateMachine.AddTransition(enemyWandering, enemyChasing, targetTooFarToAttack);
-        _stateMachine.AddTransition(enemyWandering, enemyAttacking, aggro);
-
-        _stateMachine.AddTransition(enemyChasing, enemyWandering, targetDied);
-        _stateMachine.AddTransition(enemyChasing, enemyWandering, targetDisappeared);
-        _stateMachine.AddTransition(enemyChasing, enemyWandering, targetTooFarToFollow);
-        _stateMachine.AddTransition(enemyChasing, enemyChasing, targetTooFarToAttack);
-        _stateMachine.AddTransition(enemyChasing, enemyAttacking, aggro);
-
-        _stateMachine.AddTransition(enemyAttacking, enemyWandering, targetDied);
-        _stateMachine.AddTransition(enemyAttacking, enemyWandering, targetDisappeared);
-        _stateMachine.AddTransition(enemyAttacking, enemyWandering, targetTooFarToFollow);
-        _stateMachine.AddTransition(enemyAttacking, enemyChasing, targetTooFarToAttack);
-
-        _stateMachine.AddAnyTransition(enemyDead, died);
-        _stateMachine.AddAnyTransition(enemyFleeing, lowHealth);
-    }
-    #endregion
+    public Vector2 startPosition; //public for EnemyAI
 
     protected override void Start()
     {
@@ -98,10 +55,6 @@ public class Enemy : Entity
         // remember start position in case we need to respawn later
         startPosition = transform.position;
         destination = RandomRoamPosition();
-
-        //Set the initial state at Start to prevent any execution order conflict
-        //(e.g. accessing NavMeshAgent before it's set)
-        _stateMachine.SetState(new EnemyWandering(this, moveProbability, roamDistance, startPosition));
     }
 
     protected override void UpdateOverlays()
@@ -390,8 +343,8 @@ public class Enemy : Entity
         //Debug.LogError("invalid state:" + state);
         //return "IDLE";
 
-        _stateMachine.Tick();
-        return _stateMachine.CurrentState.Name;
+        enemyAI.StateMachine.Tick();
+        return enemyAI.StateMachine.CurrentState.Name;
     }
 
     // finite state machine - client ///////////////////////////////////////////
@@ -477,7 +430,7 @@ public class Enemy : Entity
     }
 
     // death ///////////////////////////////////////////////////////////////////
-    protected override void OnDeath()
+    public override void OnDeath()
     {
         // take care of entity stuff
         base.OnDeath();

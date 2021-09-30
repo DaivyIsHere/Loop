@@ -361,6 +361,7 @@ GameObject:
   - component: {fileID: -6793460677593175782}
   - component: {fileID: -6168993761112205609}
   - component: {fileID: 5577975638267042654}
+  - component: {fileID: 3045540636132139765}
   m_Layer: 11
   m_Name: NavMeshEnemy
   m_TagString: Untagged
@@ -595,14 +596,18 @@ MonoBehaviour:
   lookDirection: {x: 0, y: -1}
   enemyItemDrop: {fileID: 8876492782577469454}
   enemyShoot: {fileID: 261384751811588112}
+  enemyAI: {fileID: 3045540636132139765}
   movementVector: {x: 0, y: 0, z: 0}
   moveProbability: 0.5
+  roamDistance: 2
+  followDistance: 6.5
   attackToMoveRangeRatio: 0.8
   overlayPosition: {fileID: 6114092187640482717}
   overlayOffset: {x: 0, y: 1, z: 0}
   amountOverlay: {fileID: 179150431952405648, guid: 46257aa9192416a4888283198cfc8bac,
     type: 3}
   damageTextColor: {r: 0.8039216, g: 0.23529412, b: 0.20784314, a: 1}
+  startPosition: {x: 0, y: 0}
 --- !u!114 &4356761232173049224
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -801,6 +806,19 @@ MonoBehaviour:
   syncInterval: 0.1
   agent: {fileID: -951087834157786979}
   networkNavMeshAgent: {fileID: -6168993761112205609}
+--- !u!114 &3045540636132139765
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7598917836323666018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a14ddf9a61f09b442914ca7cf1bdc9e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _enemy: {fileID: 7650690737209310008}
 --- !u!1 &8616825382383922053
 GameObject:
   m_ObjectHideFlags: 0
