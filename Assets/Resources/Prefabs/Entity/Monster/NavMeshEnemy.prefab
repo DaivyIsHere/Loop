@@ -819,6 +819,45 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _enemy: {fileID: 7650690737209310008}
+  _transitions:
+  - From: 1
+    To: 2
+    Condition: 2
+  - From: 1
+    To: 3
+    Condition: 0
+  - From: 2
+    To: 1
+    Condition: 6
+  - From: 2
+    To: 1
+    Condition: 5
+  - From: 2
+    To: 1
+    Condition: 3
+  - From: 2
+    To: 2
+    Condition: 2
+  - From: 2
+    To: 3
+    Condition: 0
+  - From: 3
+    To: 1
+    Condition: 6
+  - From: 3
+    To: 1
+    Condition: 5
+  - From: 3
+    To: 1
+    Condition: 3
+  - From: 3
+    To: 2
+    Condition: 2
+  _anyTransitions:
+  - To: 5
+    Condition: 8
+  - To: 4
+    Condition: 7
 --- !u!1 &8616825382383922053
 GameObject:
   m_ObjectHideFlags: 0
