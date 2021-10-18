@@ -14,6 +14,7 @@ public class EnemyWandering : IState
     public void OnEnter()
     {
         _enemy.target = null;
+        _enemy.movement.SetSpeed(_enemy.wanderingMoveSpeed);
         _enemy.movement.Navigate(_enemy.startPosition, 0);
     }
 
@@ -30,8 +31,8 @@ public class EnemyWandering : IState
             return;
 
         Vector2 circle2D = Random.insideUnitCircle * _enemy.roamDistance;
-        //Set different speed for different state.
-        //_enemy.movement.SetSpeed(2.5f);
-        _enemy.movement.Navigate(_enemy.startPosition + circle2D, 0);
+        Vector2 destination = _enemy.startPosition + circle2D;
+
+        _enemy.movement.Navigate(destination, 0);
     }
 }

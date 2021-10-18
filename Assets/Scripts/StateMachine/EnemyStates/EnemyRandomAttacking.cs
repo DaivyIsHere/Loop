@@ -1,7 +1,7 @@
 ﻿using Mirror;
 using UnityEngine;
 
-public class EnemyAttacking : IState
+public class EnemyRandomAttacking : IState
 {
     public string Name => "ATTACKING";
 
@@ -10,15 +10,18 @@ public class EnemyAttacking : IState
     private double _time;
     private Vector2 _position;
 
-    public EnemyAttacking(Enemy enemy)
+    public EnemyRandomAttacking(Enemy enemy)
     {
         _enemy = enemy;
     }
 
     public void OnEnter()
     {
-        _enemy.movement.Reset();
+        //_enemy.movement.Reset();
+        _enemy.movement.SetSpeed(_enemy.attackingMoveSpeed);
         _position = _enemy.transform.position;
+
+        _time = NetworkTime.time + 0.2f;
     }
 
     public void OnExit()
@@ -32,10 +35,10 @@ public class EnemyAttacking : IState
         if (NetworkTime.time < _time)
             return;
 
-        Vector2 circle2D = Random.insideUnitCircle * 3f;
+        Vector2 circle2D = Random.insideUnitCircle * _enemy.attackingMoveDistance;
+        Vector2 destination = _position + circle2D;
 
-        _enemy.movement.Navigate(_position + circle2D, 0);
-        _enemy.movement.SetSpeed(3f);
+        _enemy.movement.Navigate(destination, 0);
 
         _time = NetworkTime.time + 0.2f;
     }

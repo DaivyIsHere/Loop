@@ -601,6 +601,13 @@ MonoBehaviour:
   moveProbability: 0.5
   roamDistance: 2
   followDistance: 6.5
+  wanderingMoveSpeed: 2.5
+  chasingMoveDistance: 3
+  chasingMoveSpeed: 3
+  attackingMoveDistance: 3
+  attackingMoveSpeed: 3
+  fleeingMoveDistance: 3.5
+  fleeingMoveSpeed: 3.5
   attackToMoveRangeRatio: 0.8
   overlayPosition: {fileID: 6114092187640482717}
   overlayOffset: {x: 0, y: 1, z: 0}

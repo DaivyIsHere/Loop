@@ -18,6 +18,15 @@ public class Enemy : Entity
     private Vector2 destination;
     public float roamDistance = 2f; //public for EnemyAI
     public float followDistance = 6.5f; //public for EnemyAI
+    //EnemyAI decision value
+    public float wanderingMoveSpeed = 2.5f;
+    public float chasingMoveDistance = 3f;
+    public float chasingMoveSpeed = 3f;
+    public float attackingMoveDistance = 3f;
+    public float attackingMoveSpeed = 3f;
+    public float fleeingMoveDistance = 3.5f;
+    public float fleeingMoveSpeed = 3.5f;
+
     //public float turnSpd = 10f;//轉向速度
 
     //public Vector3 destination = Vector3.zero;

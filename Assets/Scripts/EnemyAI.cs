@@ -16,8 +16,11 @@ public class EnemyAI : MonoBehaviour
     #region States
     private EnemyIdle _enemyIdle;
     private EnemyWandering _enemyWandering;
-    private EnemyChasing _enemyChasing;
-    private EnemyAttacking _enemyAttacking;
+    private EnemyRandomChasing _enemyRandomChasing;
+    private EnemyChargedChasing _enemyChargedChasing;
+    private EnemyRandomAttacking _enemyRandomAttacking;
+    private EnemyChargedAttacking _enemyChargedAttacking;
+    private EnemyStraightAttacking _enemyStraightAttacking;
     private EnemyFleeing _enemyFleeing;
     private EnemyDead _enemyDead;
     #endregion
@@ -40,8 +43,11 @@ public class EnemyAI : MonoBehaviour
 
         _enemyIdle = new EnemyIdle(_enemy);
         _enemyWandering = new EnemyWandering(_enemy);
-        _enemyChasing = new EnemyChasing(_enemy);
-        _enemyAttacking = new EnemyAttacking(_enemy);
+        _enemyRandomChasing = new EnemyRandomChasing(_enemy);
+        _enemyChargedChasing = new EnemyChargedChasing(_enemy);
+        _enemyRandomAttacking = new EnemyRandomAttacking(_enemy);
+        _enemyChargedAttacking = new EnemyChargedAttacking(_enemy);
+        _enemyStraightAttacking = new EnemyStraightAttacking(_enemy);
         _enemyFleeing = new EnemyFleeing(_enemy);
         _enemyDead = new EnemyDead(_enemy);
 
@@ -55,36 +61,33 @@ public class EnemyAI : MonoBehaviour
         _lowHealth = () => _enemy.health.current < _enemy.health.max * 0.2f; //make a field for percentage
         _died = () => _enemy.health.current <= 0;
 
-        foreach (var transition in _transitions)
-            StateMachine.AddTransition(GetState(transition.From), GetState(transition.To), GetCondition(transition.Condition));
+        //foreach (var transition in _transitions)
+        //    StateMachine.AddTransition(GetState(transition.From), GetState(transition.To), GetCondition(transition.Condition));
 
-        foreach (var anyTransition in _anyTransitions)
-            StateMachine.AddAnyTransition(GetState(anyTransition.To), GetCondition(anyTransition.Condition));
+        //foreach (var anyTransition in _anyTransitions)
+        //    StateMachine.AddAnyTransition(GetState(anyTransition.To), GetCondition(anyTransition.Condition));
 
-        //StateMachine.AddTransition(enemyWandering, enemyChasing, targetTooFarToAttack);
-        //StateMachine.AddTransition(enemyWandering, enemyAttacking, aggro);
+        StateMachine.AddAnyTransition(_enemyDead, _died);
+        StateMachine.AddAnyTransition(_enemyWandering, _targetDied);
+        StateMachine.AddAnyTransition(_enemyWandering, _targetDisappeared);
+        StateMachine.AddAnyTransition(_enemyWandering, _targetTooFarToFollow);
+        StateMachine.AddAnyTransition(_enemyFleeing, _lowHealth);
 
-        //StateMachine.AddTransition(enemyChasing, enemyWandering, targetDied);
-        //StateMachine.AddTransition(enemyChasing, enemyWandering, targetDisappeared);
-        //StateMachine.AddTransition(enemyChasing, enemyWandering, targetTooFarToFollow);
-        //StateMachine.AddTransition(enemyChasing, enemyChasing, targetTooFarToAttack);
-        //StateMachine.AddTransition(enemyChasing, enemyAttacking, aggro);
+        //Random
+        StateMachine.AddAnyTransition(_enemyRandomChasing, _targetTooFarToAttack);
+        StateMachine.AddAnyTransition(_enemyRandomAttacking, _aggro);
 
-        //StateMachine.AddTransition(enemyAttacking, enemyWandering, targetDied);
-        //StateMachine.AddTransition(enemyAttacking, enemyWandering, targetDisappeared);
-        //StateMachine.AddTransition(enemyAttacking, enemyWandering, targetTooFarToFollow);
-        //StateMachine.AddTransition(enemyAttacking, enemyChasing, targetTooFarToAttack);
+        //Charged
+        //StateMachine.AddAnyTransition(_enemyChargedChasing, _targetTooFarToAttack);
+        //StateMachine.AddAnyTransition(_enemyChargedAttacking, _aggro);
 
-        //StateMachine.AddAnyTransition(enemyDead, died);
-        //StateMachine.AddAnyTransition(enemyFleeing, lowHealth);
+        //Straight
+        //StateMachine.AddAnyTransition(_enemyStraightAttacking, _aggro);
     }
 
-    private void Start()
-    {
-        //Set the initial state at Start instead of Awake to prevent any execution order conflict
-        //(e.g. accessing NavMeshAgent before it's set)
-        StateMachine.SetState(_enemyWandering);
-    }
+    //Set the initial state at Start instead of Awake to prevent any execution order conflict
+    //(e.g. accessing NavMeshAgent before it's set)
+    private void Start() => StateMachine.SetState(_enemyWandering);
 
     private IState GetState(EnemyState state)
     {
@@ -94,10 +97,16 @@ public class EnemyAI : MonoBehaviour
                 return _enemyIdle;
             case EnemyState.Wandering:
                 return _enemyWandering;
-            case EnemyState.Chasing:
-                return _enemyChasing;
-            case EnemyState.Attacking:
-                return _enemyAttacking;
+            case EnemyState.RandomChasing:
+                return _enemyRandomChasing;
+            case EnemyState.ChargedChasing:
+                return _enemyChargedChasing;
+            case EnemyState.RandomAttacking:
+                return _enemyRandomAttacking;
+            case EnemyState.ChargedAttacking:
+                return _enemyChargedAttacking;
+            case EnemyState.StraightAttacking:
+                return _enemyStraightAttacking;
             case EnemyState.Fleeing:
                 return _enemyFleeing;
             case EnemyState.Dead:
@@ -150,6 +159,6 @@ public class EnemyAnyTransition
     public EnemyCondition Condition;
 }
 
-public enum EnemyState { Idle, Wandering, Chasing, Attacking, Fleeing, Dead }
+public enum EnemyState { Idle, Wandering, RandomChasing, ChargedChasing, RandomAttacking, ChargedAttacking, StraightAttacking, Fleeing, Dead }
 
 public enum EnemyCondition { Aggro, AggroChase, TargetTooFarToAttack, TargetTooFarToFollow, TargetTooClose, TargetDisappeared, TargetDied, LowHealth, Died }
