@@ -34,7 +34,8 @@ public class StateMachine
             _currentTransitions = _emptyTransitions;
 
         CurrentState?.OnEnter();
-        //
+
+        ///Debug
         Debug.Log(CurrentState.Name);
     }
 

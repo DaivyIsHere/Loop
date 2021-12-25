@@ -17,6 +17,8 @@ public class EnemyRandomAttacking : IState
 
     public void OnEnter()
     {
+        _enemy.enemyShoot.Shoot();
+
         //_enemy.movement.Reset();
         _enemy.movement.SetSpeed(_enemy.attackingMoveSpeed);
         _position = _enemy.transform.position;
@@ -26,12 +28,11 @@ public class EnemyRandomAttacking : IState
 
     public void OnExit()
     {
+        _enemy.enemyShoot.StopShoot();
     }
 
     public void Tick()
     {
-        _enemy.enemyShoot.Shoot();
-
         if (NetworkTime.time < _time)
             return;
 
@@ -40,6 +41,7 @@ public class EnemyRandomAttacking : IState
 
         _enemy.movement.Navigate(destination, 0);
 
+        // TODO: 0.2f is a hard coded value, consider move it into a field
         _time = NetworkTime.time + 0.2f;
     }
 }

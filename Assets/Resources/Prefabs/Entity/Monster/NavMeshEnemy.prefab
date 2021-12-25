@@ -732,12 +732,68 @@ MonoBehaviour:
     type: 3}
   enemy: {fileID: 7650690737209310008}
   _baseAttackSpeed: 2
-  shootPattern:
-    shootMainAngle: 0
-    shootSpreadAngle: 0
-    shootAmount: 1
-    angleDeviation: 5
-    shootBonusRate: 1
+  _shootModes:
+  - ProjectileAttribute:
+      movePattern: 0
+      maxDamage: 5
+      minDamage: 1
+      moveRange: 5
+      moveSpeed: 10
+      radius: 0.25
+      sprite: {fileID: 21300000, guid: fe6f592823deaa347bdc4a1c0d11d146, type: 3}
+      piercingEnemy: 0
+      piercingObject: 0
+      ignoreDefence: 0
+    ShootPattern:
+      shootMainAngle: 0
+      shootSpreadAngle: 0
+      shootAmount: 1
+      angleDeviation: 0
+      shootBonusRate: 1
+    IsPredicted: 1
+    RepeatedTime: 5
+    CooldownInterval: 2
+  - ProjectileAttribute:
+      movePattern: 0
+      maxDamage: 5
+      minDamage: 1
+      moveRange: 5
+      moveSpeed: 10
+      radius: 0.5
+      sprite: {fileID: 21300000, guid: fe6f592823deaa347bdc4a1c0d11d146, type: 3}
+      piercingEnemy: 0
+      piercingObject: 0
+      ignoreDefence: 0
+    ShootPattern:
+      shootMainAngle: 0
+      shootSpreadAngle: 360
+      shootAmount: 12
+      angleDeviation: 0
+      shootBonusRate: 0.5
+    IsPredicted: 0
+    RepeatedTime: 3
+    CooldownInterval: 2
+  - ProjectileAttribute:
+      movePattern: 0
+      maxDamage: 5
+      minDamage: 1
+      moveRange: 5
+      moveSpeed: 10
+      radius: 0.5
+      sprite: {fileID: 21300000, guid: fe6f592823deaa347bdc4a1c0d11d146, type: 3}
+      piercingEnemy: 0
+      piercingObject: 0
+      ignoreDefence: 0
+    ShootPattern:
+      shootMainAngle: 0
+      shootSpreadAngle: 30
+      shootAmount: 3
+      angleDeviation: 0
+      shootBonusRate: 1.5
+    IsPredicted: 0
+    RepeatedTime: 5
+    CooldownInterval: 2
+  IsPaused: 0
   projectileAttribute:
     movePattern: 0
     maxDamage: 5
@@ -826,45 +882,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _enemy: {fileID: 7650690737209310008}
-  _transitions:
-  - From: 1
-    To: 2
-    Condition: 2
-  - From: 1
-    To: 3
-    Condition: 0
-  - From: 2
-    To: 1
-    Condition: 6
-  - From: 2
-    To: 1
-    Condition: 5
-  - From: 2
-    To: 1
-    Condition: 3
-  - From: 2
-    To: 2
-    Condition: 2
-  - From: 2
-    To: 3
-    Condition: 0
-  - From: 3
-    To: 1
-    Condition: 6
-  - From: 3
-    To: 1
-    Condition: 5
-  - From: 3
-    To: 1
-    Condition: 3
-  - From: 3
-    To: 2
-    Condition: 2
-  _anyTransitions:
-  - To: 5
-    Condition: 8
-  - To: 4
-    Condition: 7
+  _transitions: []
+  _anyTransitions: []
 --- !u!1 &8616825382383922053
 GameObject:
   m_ObjectHideFlags: 0

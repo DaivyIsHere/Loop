@@ -8,6 +8,102 @@ public class EnemyShoot : EntityProjectileLauncher
     [Header("Component")]
     public Enemy enemy;
 
+    [SerializeField] private float _baseAttackSpeed = 2f;
+    [SerializeField] private List<ShootMode> _shootModes;
+
+    [HideInInspector]
+    public bool IsPaused = false;
+
+    private Vector2 _targetLastPosition;
+    private Vector2 _predictedDirection;
+
+    private IEnumerator _shootCoroutine;
+    private IEnumerator _predictCoroutine;
+
+    // TODO: Other classes have dependencies on moveRange, move the variable into Enemy's decision parameters.
+    public ProjectileAttribute projectileAttribute;
+
+    public void Shoot()
+    {
+        if (_predictCoroutine == null)
+            _predictCoroutine = GetPrediction();
+
+        if (_shootCoroutine == null)
+            _shootCoroutine = LoopShoot();
+
+        StartCoroutine(_predictCoroutine);
+        StartCoroutine(_shootCoroutine);
+    }
+
+    public void StopShoot()
+    {
+        StopCoroutine(_shootCoroutine);
+    }
+
+    public void ResetShoot()
+    {
+        StopAllCoroutines();
+        _predictCoroutine = GetPrediction();
+        _shootCoroutine = LoopShoot();
+    }
+
+    private IEnumerator LoopShoot()
+    {
+        double cooldown = 0;
+
+        while (true)
+        {
+            var index = 0;
+
+            foreach (var shootMode in _shootModes)
+            {
+                var shootInterval = 1 / (_baseAttackSpeed * shootMode.ShootPattern.shootBonusRate);
+
+                for (int i = 0; i < shootMode.RepeatedTime; i++)
+                {
+                    while (cooldown > NetworkTime.time || IsPaused)
+                        yield return null;
+
+                    var direction = shootMode.IsPredicted ? _predictedDirection : (Vector2)(enemy.target.transform.position - transform.position);
+                    var networkTimeWhenShoot = NetworkTime.time;
+
+                    LaunchProjectile(shootMode.ShootPattern, shootMode.ProjectileAttribute, enemy, direction, networkTimeWhenShoot, false);
+
+                    RpcShoot(index, direction, networkTimeWhenShoot);
+
+                    cooldown = NetworkTime.time + shootInterval;
+                }
+
+                cooldown = NetworkTime.time + shootMode.CooldownInterval;
+                index++;
+            }
+        }
+    }
+
+    private IEnumerator GetPrediction()
+    {
+        _targetLastPosition = enemy.target.transform.position;
+
+        while (true)
+        {
+            Vector2 offset = ((Vector2)enemy.target.transform.position - _targetLastPosition).normalized;
+            _predictedDirection = (Vector2)enemy.target.transform.position + offset - (Vector2)enemy.transform.position;
+            _targetLastPosition = enemy.target.transform.position;
+
+            yield return null;
+        }
+    }
+
+    [ClientRpc]
+    private void RpcShoot(int index, Vector2 direciton, double networkTimeWhenShoot)
+    {
+        if (isServer)
+            return;
+
+        LaunchProjectile(_shootModes[index].ShootPattern, _shootModes[index].ProjectileAttribute, enemy, direciton, networkTimeWhenShoot, false);
+    }
+
+    /* Refactored
     [Header("Projectile")]
     public float _baseAttackSpeed = 2f;
     public float attackSpeed
@@ -65,4 +161,15 @@ public class EnemyShoot : EntityProjectileLauncher
 
         LaunchProjectile(shootPattern, projectileAttribute, enemy, direction, networkTimeWhenShoot, false);
     }
+    //*/
+}
+
+[System.Serializable]
+public class ShootMode
+{
+    public ProjectileAttribute ProjectileAttribute;
+    public ShootPattern ShootPattern;
+    public bool IsPredicted;
+    public int RepeatedTime;
+    public float CooldownInterval;
 }

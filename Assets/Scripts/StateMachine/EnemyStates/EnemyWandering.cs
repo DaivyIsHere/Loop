@@ -13,9 +13,11 @@ public class EnemyWandering : IState
 
     public void OnEnter()
     {
-        _enemy.target = null;
+        _enemy.enemyShoot.ResetShoot();
+
         _enemy.movement.SetSpeed(_enemy.wanderingMoveSpeed);
         _enemy.movement.Navigate(_enemy.startPosition, 0);
+        _enemy.target = null;
     }
 
     public void OnExit()
