@@ -14,36 +14,20 @@ public class EnemyShoot : EntityProjectileLauncher
     [HideInInspector]
     public bool IsPaused = false;
 
-    private Vector2 _targetLastPosition;
-    private Vector2 _predictedDirection;
-
     private IEnumerator _shootCoroutine;
-    private IEnumerator _predictCoroutine;
 
     // TODO: Other classes have dependencies on moveRange, move the variable into Enemy's decision parameters.
     public ProjectileAttribute projectileAttribute;
 
-    public void Shoot()
-    {
-        if (_predictCoroutine == null)
-            _predictCoroutine = GetPrediction();
+    private void Awake() => _shootCoroutine = LoopShoot();
 
-        if (_shootCoroutine == null)
-            _shootCoroutine = LoopShoot();
+    public void Shoot() => StartCoroutine(_shootCoroutine);
 
-        StartCoroutine(_predictCoroutine);
-        StartCoroutine(_shootCoroutine);
-    }
-
-    public void StopShoot()
-    {
-        StopCoroutine(_shootCoroutine);
-    }
+    public void StopShoot() => StopCoroutine(_shootCoroutine);
 
     public void ResetShoot()
     {
-        StopAllCoroutines();
-        _predictCoroutine = GetPrediction();
+        StopCoroutine(_shootCoroutine);
         _shootCoroutine = LoopShoot();
     }
 
@@ -64,7 +48,7 @@ public class EnemyShoot : EntityProjectileLauncher
                     while (cooldown > NetworkTime.time || IsPaused)
                         yield return null;
 
-                    var direction = shootMode.IsPredicted ? _predictedDirection : (Vector2)(enemy.target.transform.position - transform.position);
+                    var direction = (Vector2)(enemy.target.transform.position - transform.position) + (shootMode.IsPredicted ? enemy.target.movement.GetVelocity().normalized : Vector2.zero);
                     var networkTimeWhenShoot = NetworkTime.time;
 
                     LaunchProjectile(shootMode.ShootPattern, shootMode.ProjectileAttribute, enemy, direction, networkTimeWhenShoot, false);
@@ -77,20 +61,6 @@ public class EnemyShoot : EntityProjectileLauncher
                 cooldown = NetworkTime.time + shootMode.CooldownInterval;
                 index++;
             }
-        }
-    }
-
-    private IEnumerator GetPrediction()
-    {
-        _targetLastPosition = enemy.target.transform.position;
-
-        while (true)
-        {
-            Vector2 offset = ((Vector2)enemy.target.transform.position - _targetLastPosition).normalized;
-            _predictedDirection = (Vector2)enemy.target.transform.position + offset - (Vector2)enemy.transform.position;
-            _targetLastPosition = enemy.target.transform.position;
-
-            yield return null;
         }
     }
 
